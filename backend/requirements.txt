@@ -1,0 +1,27 @@
+# FastAPI y servidor
+fastapi==0.115.6
+uvicorn==0.34.0
+
+# OCR y procesamiento de imágenes
+easyocr==1.7.2
+opencv-python==4.10.0.84
+pillow==11.0.0
+pytesseract==0.3.13
+pdf2image==1.17.0
+
+# ML y procesamiento numérico
+torch==2.5.1
+torchvision==0.20.1
+numpy==1.26.4
+scikit-image==0.25.0
+scipy==1.14.1
+matplotlib==3.10.0
+
+# Manejo de archivos y rutas
+python-multipart==0.0.20
+python-dotenv==1.0.1
+
+# Utilidades
+requests==2.32.3
+typer==0.15.1
+rich==13.9.4
