@@ -1,17 +1,15 @@
 FROM python:3.10
 
-# Configura el directorio de trabajo
-WORKDIR /code
+WORKDIR /app/backend
 
-# Copia el archivo de dependencias e instala
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --upgrade pip && pip install --no-cache-dir -r /code/requirements.txt
+COPY ./requirements.txt /app/backend/requirements.txt
 
-# Copia todo el backend (incluyendo main.py)
-COPY . /code
+RUN apt-get update && apt-get install -y tesseract-ocr libtesseract-dev
 
-# Expone el puerto
-EXPOSE 80
+RUN pip install -r requirements.txt
 
-# Ejecuta el servidor FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+COPY . /app/backend
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

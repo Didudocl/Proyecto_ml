@@ -4,10 +4,6 @@ from pytesseract import Output
 import os
 import cv2
 
-# Asegúrate de que Tesseract esté instalado y configurado en tu sistema
-# Puedes especificar la ruta de Tesseract si es necesario
-# pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-
 def extract_text_only_tesseract(image):
     """Extrae solo el texto de una imagen usando Tesseract OCR."""
     custom_config = r'--oem 3 --psm 6'
@@ -20,7 +16,6 @@ def process_pdf_tesseract(pdf_path):
     for i, image in enumerate(images):
         temp_image_path = f"output/pdf_images/page_{i+1}.jpg"
         image.save(temp_image_path, "JPEG")
-        # Leer la imagen usando OpenCV
         img_cv = cv2.imread(temp_image_path)
         if img_cv is not None:
             text = extract_text_only_tesseract(img_cv)
@@ -35,30 +30,25 @@ def process_image_tesseract(image_path):
     if image is None:
         raise ValueError("Error: No se pudo leer la imagen.")
 
-    # Procesar con Tesseract OCR
     print("Procesando imagen con Tesseract OCR.")
     custom_config = r'--oem 3 --psm 11'
     detections = pytesseract.image_to_data(image, lang="spa+eng", config=custom_config, output_type=Output.DICT)
 
-    # Dibujar rectángulos en la imagen y guardar las detecciones
     detections_data = []
     for i in range(len(detections['text'])):
-        if int(detections['conf'][i]) > 0:  # Filtrar detecciones sin confianza
+        if int(detections['conf'][i]) > 0:
             x, y, w, h = detections['left'][i], detections['top'][i], detections['width'][i], detections['height'][i]
             text = detections['text'][i]
             confidence = detections['conf'][i]
 
-            # Guardar las detecciones en una lista
             detections_data.append({
                 "bounding_box": [[x, y], [x + w, y], [x + w, y + h], [x, y + h]],
                 "text": text,
                 "confidence": float(confidence)
             })
 
-            # Dibujar rectángulo en la imagen
             cv2.rectangle(image, (x, y), (x + w, y + h), color=(0, 0, 255), thickness=1)
 
-    # Crear carpeta de salida y guardar la imagen procesada
     output_folder = "output/processed_images"
     os.makedirs(output_folder, exist_ok=True)
     output_path = os.path.join(output_folder, "process_image_tesseract.png")
@@ -66,5 +56,4 @@ def process_image_tesseract(image_path):
     print(f"Imagen guardada en: {output_path}")
 
     print(detections_data)
-    # Retornar detecciones serializables
     return detections_data
